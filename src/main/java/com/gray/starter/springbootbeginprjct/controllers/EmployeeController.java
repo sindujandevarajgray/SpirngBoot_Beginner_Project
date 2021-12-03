@@ -43,9 +43,6 @@ public class EmployeeController {
         employeeDto.setCountry("Sri lanka");
         employeeDto.setId(1);
         employeeDto.setName("Pasindu Raveen");
-        System.out.println("Organization is " + organizationId);
-        System.out.println("Employee ID is  " + employeeId);
-        System.out.println("Employee DTO is " + employeeDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(employeeDto);
     }
