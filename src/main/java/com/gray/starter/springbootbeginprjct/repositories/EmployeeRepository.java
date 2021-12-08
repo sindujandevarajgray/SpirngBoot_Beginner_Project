@@ -19,7 +19,7 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Intege
     //    JPA Query
     Optional<EmployeeEntity> findByName(String name);
 
-    Optional<EmployeeEntity> findByNameAndCountry(String name, String country);
+    Optional<List<EmployeeEntity>> findByNameAndCountry(String name, String country);
 
     Optional<EmployeeEntity> findByCountry(String country);
 

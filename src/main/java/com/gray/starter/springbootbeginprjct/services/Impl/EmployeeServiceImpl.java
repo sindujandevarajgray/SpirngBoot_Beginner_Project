@@ -9,6 +9,7 @@ import com.gray.starter.springbootbeginprjct.model.OranzationEntity;
 import com.gray.starter.springbootbeginprjct.repositories.EmployeeRepository;
 import com.gray.starter.springbootbeginprjct.repositories.OrgnizationRepository;
 import com.gray.starter.springbootbeginprjct.services.EmployeeService;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by IntelliJ IDEA Ultimate.
@@ -89,12 +94,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ResponseEntity<EmployeeDto> findByName(String name) {
-        return null;
+        EmployeeEntity repositoryByName = employeeRepository.findByName(name).orElseThrow(
+                () -> new DataNotFoundException(messageNotFound, String.valueOf(name)));
+        return ResponseEntity.status(HttpStatus.OK).body(repositoryByName.toDto());
     }
 
     @Override
-    public ResponseEntity<EmployeeDto> findByCounrtry(String country) {
-        return null;
+    public ResponseEntity<List<EmployeeDto>> findByCounrtry(String country) {
+        List<EmployeeDto> employeeEntity = employeeRepository.findByCountry(country).stream().map(EmployeeEntity::toDto).collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(employeeEntity);
     }
 
 }

@@ -33,7 +33,7 @@ public class EmployeeEntity {
     @JoinColumn(name = "organization_Id")
     private OranzationEntity oranzationEntity;
 
-    public EmployeeDto toEntity(){
+    public EmployeeDto toDto(){
         EmployeeDto dto = new EmployeeDto();
         BeanUtils.copyProperties(this,dto);
         return dto;

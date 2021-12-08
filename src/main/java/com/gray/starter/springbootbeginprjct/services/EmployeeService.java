@@ -3,7 +3,7 @@ package com.gray.starter.springbootbeginprjct.services;
 import com.gray.starter.springbootbeginprjct.dto.EmployeeDto;
 import org.springframework.http.ResponseEntity;
 
-import javax.xml.ws.Response;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA Ultimate.
@@ -14,7 +14,6 @@ import javax.xml.ws.Response;
  */
 public interface EmployeeService {
     ResponseEntity<EmployeeDto> save(int organizationId , EmployeeDto employeeDto);
-
     ResponseEntity<EmployeeDto> findByName(String name);
-    ResponseEntity<EmployeeDto> findByCounrtry(String country);
+    ResponseEntity<List<EmployeeDto>> findByCounrtry(String country);
 }

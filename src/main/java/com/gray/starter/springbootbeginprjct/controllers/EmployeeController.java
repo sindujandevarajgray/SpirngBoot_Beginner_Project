@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA Ultimate.
@@ -24,6 +25,20 @@ public class EmployeeController {
     @Autowired
     EmployeeServiceImpl employeeService;
 
+    @GetMapping("/{organizationId}/employee")
+    public ResponseEntity<EmployeeDto> findByname(
+            @PathVariable int organizationId,
+            @Valid @RequestParam String name) {
+        ResponseEntity<EmployeeDto> response = employeeService.findByName(name);
+        return response;
+    }
+    @GetMapping("/{organizationId}/employee/country")
+    public ResponseEntity<List<EmployeeDto>> save(
+            @PathVariable int organizationId,
+            @Valid @RequestParam String country) {
+        ResponseEntity<List<EmployeeDto>> employeeServiceByCounrtry = employeeService.findByCounrtry(country);
+        return employeeServiceByCounrtry;
+    }
     @PostMapping("/{organizationId}/employee")
     public ResponseEntity<EmployeeDto> save(
             @PathVariable int organizationId,
