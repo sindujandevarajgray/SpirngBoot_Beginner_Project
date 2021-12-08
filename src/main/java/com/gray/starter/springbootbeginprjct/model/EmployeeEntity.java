@@ -1,7 +1,9 @@
 package com.gray.starter.springbootbeginprjct.model;
 
+import com.gray.starter.springbootbeginprjct.dto.EmployeeDto;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
 
@@ -30,4 +32,10 @@ public class EmployeeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organization_Id")
     private OranzationEntity oranzationEntity;
+
+    public EmployeeDto toEntity(){
+        EmployeeDto dto = new EmployeeDto();
+        BeanUtils.copyProperties(this,dto);
+        return dto;
+    }
 }

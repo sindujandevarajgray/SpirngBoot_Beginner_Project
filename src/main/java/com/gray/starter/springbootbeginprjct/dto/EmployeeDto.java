@@ -1,6 +1,9 @@
 package com.gray.starter.springbootbeginprjct.dto;
 
+import com.fasterxml.jackson.databind.util.BeanUtil;
+import com.gray.starter.springbootbeginprjct.model.EmployeeEntity;
 import lombok.*;
+import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -37,5 +40,10 @@ public class EmployeeDto {
     @Min(value = 18, message = "Age should not be less than 18")
     private int age;
 
+    public EmployeeEntity toEntity(){
+        EmployeeEntity entity = new EmployeeEntity();
+        BeanUtils.copyProperties(this,entity);
+        return entity;
+    }
 
 }
