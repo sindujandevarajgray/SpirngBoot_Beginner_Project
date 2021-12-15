@@ -1,5 +1,6 @@
 package com.gray.starter.springbootbeginprjct.repositories;
 
+import com.gray.starter.springbootbeginprjct.dto.EmployeeDto;
 import com.gray.starter.springbootbeginprjct.model.EmployeeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,6 +23,8 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Intege
     Optional<List<EmployeeEntity>> findByNameAndCountry(String name, String country);
 
     Optional<EmployeeEntity> findByCountry(String country);
+
+    Optional<EmployeeEntity> findByEmpIdAndAndOranzationEntity_OrgId(int empId, int orgId);
 
     //    JPQL Query
     @Query(value = "SELECT e FROM EmployeeEntity e WHERE e.name=:name AND e.country=:country")

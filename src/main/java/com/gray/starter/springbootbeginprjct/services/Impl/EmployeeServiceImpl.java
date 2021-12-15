@@ -1,5 +1,6 @@
 package com.gray.starter.springbootbeginprjct.services.Impl;
 
+import com.gray.starter.springbootbeginprjct.dto.CustomPageDto;
 import com.gray.starter.springbootbeginprjct.dto.EmployeeDto;
 import com.gray.starter.springbootbeginprjct.exception.DataNotFoundException;
 import com.gray.starter.springbootbeginprjct.exception.DuplicateDataFoundException;
@@ -9,18 +10,20 @@ import com.gray.starter.springbootbeginprjct.model.OranzationEntity;
 import com.gray.starter.springbootbeginprjct.repositories.EmployeeRepository;
 import com.gray.starter.springbootbeginprjct.repositories.OrgnizationRepository;
 import com.gray.starter.springbootbeginprjct.services.EmployeeService;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -93,6 +96,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public ResponseEntity<EmployeeDto> update(int organizationId, EmployeeDto employeeDto) {
+        OranzationEntity oranzation = orgnizationRepository.findById(organizationId)
+                .orElseThrow(() -> new DataNotFoundException(messageNotFound, String.valueOf(organizationId)));
+        EmployeeEntity employeeEntity = employeeDto.toEntity();
+        employeeEntity.setOranzationEntity(oranzation);
+
+        employeeRepository.save(employeeEntity);
+        return ResponseEntity.status(HttpStatus.OK).body(employeeEntity.toDto());
+    }
+
+    @Override
     public ResponseEntity<EmployeeDto> findByName(String name) {
         EmployeeEntity repositoryByName = employeeRepository.findByName(name).orElseThrow(
                 () -> new DataNotFoundException(messageNotFound, String.valueOf(name)));
@@ -101,8 +115,36 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ResponseEntity<List<EmployeeDto>> findByCounrtry(String country) {
-        List<EmployeeDto> employeeEntity = employeeRepository.findByCountry(country).stream().map(EmployeeEntity::toDto).collect(Collectors.toList());
+        List<EmployeeDto> employeeEntity = employeeRepository.findByCountry(country)
+                .stream()
+                .map(EmployeeEntity::toDto).collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(employeeEntity);
     }
+
+    @Override
+    public ResponseEntity<EmployeeDto> findByEmpIdAndAndOranzationEntity_OrgId(int empId, int orgId) {
+        EmployeeEntity employeeRepositoryByEmpIdAndAndOranzationEntity_orgId = employeeRepository
+                .findByEmpIdAndAndOranzationEntity_OrgId(empId, orgId)
+                .orElseThrow(() -> new DataNotFoundException("Employee not found",
+                        String.format("employeeId: %s organizationId: %s", empId, orgId)));
+        return ResponseEntity.status(HttpStatus.OK).body(employeeRepositoryByEmpIdAndAndOranzationEntity_orgId.toDto());
+    }
+
+    @Override
+    public ResponseEntity<CustomPageDto<EmployeeDto>> findAllWithPagination(int page, int size, int organizationId) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+
+        CustomPageDto<EmployeeDto> customPageDto = new CustomPageDto<>();
+
+        Page<EmployeeEntity> employeeEntityPage = employeeRepository.findAll(pageable);
+
+        BeanUtils.copyProperties(employeeEntityPage, customPageDto);
+
+        customPageDto.setData(employeeEntityPage.stream().map(EmployeeEntity::toDto)
+                .collect(Collectors.toList()));
+
+        return ResponseEntity.status(HttpStatus.OK).body(customPageDto);
+    }
+
 
 }

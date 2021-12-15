@@ -25,12 +25,12 @@ public class EmployeeController {
     @Autowired
     EmployeeServiceImpl employeeService;
 
-    @GetMapping("/{organizationId}/employee")
-    public ResponseEntity<EmployeeDto> findByname(
+    @PostMapping("/{organizationId}/employee")
+    public ResponseEntity<EmployeeDto> save(
             @PathVariable int organizationId,
-            @Valid @RequestParam String name) {
-        ResponseEntity<EmployeeDto> response = employeeService.findByName(name);
-        return response;
+            @Valid @RequestBody EmployeeDto employeeDto) {
+        ResponseEntity<EmployeeDto> save = employeeService.save(organizationId, employeeDto);
+        return save;
     }
     @GetMapping("/{organizationId}/employee/country")
     public ResponseEntity<List<EmployeeDto>> save(
@@ -39,12 +39,12 @@ public class EmployeeController {
         ResponseEntity<List<EmployeeDto>> employeeServiceByCounrtry = employeeService.findByCounrtry(country);
         return employeeServiceByCounrtry;
     }
-    @PostMapping("/{organizationId}/employee")
-    public ResponseEntity<EmployeeDto> save(
+    @GetMapping("/{organizationId}/employee")
+    public ResponseEntity<EmployeeDto> findByname(
             @PathVariable int organizationId,
-            @Valid @RequestBody EmployeeDto employeeDto) {
-        ResponseEntity<EmployeeDto> save = employeeService.save(organizationId, employeeDto);
-        return save;
+            @Valid @RequestParam String name) {
+        ResponseEntity<EmployeeDto> response = employeeService.findByName(name);
+        return response;
     }
 
     @GetMapping("/{organizationId}/employee/{employeeId}")
